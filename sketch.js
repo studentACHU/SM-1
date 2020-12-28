@@ -1,57 +1,66 @@
-var wall;
-var car;
-var speed;
-var weight;
+var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
+var packageBody,ground
+const Engine = Matter.Engine;
+const World = Matter.World;
+const Bodies = Matter.Bodies;
+const Body = Matter.Body;
 
-
-
+function preload()
+{
+	helicopterIMG=loadImage("helicopter.png")
+	packageIMG=loadImage("package.png")
+}
 
 function setup() {
+	createCanvas(800, 700);
+	rectMode(CENTER);
+	
 
+	packageSprite=createSprite(width/2, 80, 10,10);
+	packageSprite.addImage(packageIMG)
+	packageSprite.scale=0.2
+
+	helicopterSprite=createSprite(width/2, 200, 10,10);
+	helicopterSprite.addImage(helicopterIMG)
+	helicopterSprite.scale=0.6
+
+	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite.shapeColor=color(255)
+
+
+	engine = Engine.create();
+	world = engine.world;
+
+	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:0.6, isStatic:true});
+	World.add(world, packageBody);
+	
+
+	//Create a Ground
+	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
+ 	World.add(world, ground);
+
+
+	Engine.run(engine);
   
-
-
-
-
-  createCanvas(1600,400);  
-
-
- wall= createSprite(1400, 200, 50, 250);
-
- 
-  
-
-  speed=random(55,90);
-
-  car = createSprite(0, 200, 50, 50);
-  car.velocityX=speed;
-  car.shapeColor="white";
-
-  weight = random(400,1500);
 }
+
 
 function draw() {
-  background("black"); 
-  if(wall.x-car.x<(car.width/2+wall.width/2)){
-   
-    car.velocityX=0;
-
-    var deform = (0.5*weight*speed*speed)/22500;
-
-    if(deform<100){
-
-      car.shapeColor="green";
-    }
-
-    if(deform<180&&deform>100){
-
-      car.shapeColor="yellow";
-    }
-
-    if(deform>180){
-
-      car.shapeColor="red";
-    }
-  } 
+  rectMode(CENTER);
+  background(0);
+  packageSprite.x= packageBody.position.x 
+  packageSprite.y= packageBody.position.y 
   drawSprites();
+ 
 }
+
+function keyPressed() {
+ if (keyCode === DOWN_ARROW) {
+    
+    Matter.Body.setStatic(packageBody,false);
+    
+  }
+}
+
+
+
